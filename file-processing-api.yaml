@@ -1,0 +1,64 @@
+openapi: 3.1.0
+info:
+  title: File Processing API
+  description: API for uploading and downloading .xls, .xlsx, and .csv files.
+  version: 1.0.0
+servers:
+  - url: https://yourapi.example.com/v1
+    description: Your production server (replace with actual domain)
+paths:
+  /upload:
+    post:
+      operationId: uploadFile
+      summary: Upload a spreadsheet file (.xls, .xlsx, .csv)
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: File uploaded and processed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+
+  /download:
+    get:
+      operationId: downloadFile
+      summary: Download a processed spreadsheet file
+      parameters:
+        - in: query
+          name: format
+          required: true
+          description: File format to download (.xls, .xlsx, .csv)
+          schema:
+            type: string
+            enum: [xls, xlsx, csv]
+      responses:
+        '200':
+          description: File downloaded successfully
+          content:
+            application/vnd.ms-excel:
+              schema:
+                type: string
+                format: binary
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema:
+                type: string
+                format: binary
+            text/csv:
+              schema:
+                type: string
+                format: binary
